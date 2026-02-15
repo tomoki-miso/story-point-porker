@@ -1,0 +1,93 @@
+:root {
+	/* パチンコ風カラーパレット (Neon theme - default) */
+	--color-bg: #0a0a1a;
+	--color-bg-secondary: #1a1a3e;
+	--color-surface: #2a2a5e;
+	--color-surface-hover: #3a3a7e;
+
+	--color-neon-pink: #ff2d95;
+	--color-neon-blue: #00d4ff;
+	--color-neon-green: #39ff14;
+	--color-neon-yellow: #ffe600;
+	--color-neon-orange: #ff6600;
+	--color-neon-purple: #bf00ff;
+
+	--color-gold: #ffd700;
+	--color-silver: #c0c0c0;
+
+	--color-text: #ffffff;
+	--color-text-muted: #a0a0c0;
+
+	/* グロー効果 */
+	--glow-pink: 0 0 10px var(--color-neon-pink), 0 0 30px var(--color-neon-pink);
+	--glow-blue: 0 0 10px var(--color-neon-blue), 0 0 30px var(--color-neon-blue);
+	--glow-green: 0 0 10px var(--color-neon-green), 0 0 30px var(--color-neon-green);
+	--glow-gold: 0 0 10px var(--color-gold), 0 0 30px var(--color-gold);
+
+	/* フォント */
+	--font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+	--font-display: 'Impact', 'Arial Black', sans-serif;
+
+	/* サイズ */
+	--card-width: 80px;
+	--card-height: 120px;
+	--radius: 12px;
+
+	/* スペーシング */
+	--space-xs: 0.25rem;
+	--space-sm: 0.5rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2rem;
+
+	/* トランジション */
+	--transition-fast: 0.2s ease;
+	--transition-normal: 0.3s ease;
+}
+
+/* ========================================
+   Windows XP Luna Blue Theme
+   ======================================== */
+[data-theme='xp'] {
+	--color-bg: #0078d7;
+	--color-bg-secondary: #ece9d8;
+	--color-surface: #d6d2c2;
+	--color-surface-hover: #e8e4d4;
+
+	--color-neon-pink: #0054e3;
+	--color-neon-blue: #316ac5;
+	--color-neon-green: #37b337;
+	--color-neon-yellow: #ebb214;
+	--color-neon-orange: #ff8c00;
+	--color-neon-purple: #7a96df;
+
+	--color-gold: #ebb214;
+	--color-silver: #c0c0c0;
+
+	--color-text: #000000;
+	--color-text-muted: #544e3f;
+
+	/* グロー効果を無効化 */
+	--glow-pink: none;
+	--glow-blue: none;
+	--glow-green: none;
+	--glow-gold: none;
+
+	/* フォント */
+	--font-main: 'Tahoma', 'Segoe UI', 'Verdana', sans-serif;
+	--font-display: 'Trebuchet MS', 'Tahoma', sans-serif;
+
+	--radius: 3px;
+
+	/* XP 固有変数 */
+	--color-window: #ffffff;
+	--color-button-face: #ece9d8;
+	--color-button-highlight: #ffffff;
+	--color-button-shadow: #aca899;
+	--color-button-dk-shadow: #716f64;
+	--color-titlebar-start: #0054e3;
+	--color-titlebar-end: #4e98ff;
+	--color-input-border: #7f9db9;
+	--shadow-window: 2px 2px 6px rgba(0, 0, 0, 0.3);
+	--radius-window: 8px;
+}
