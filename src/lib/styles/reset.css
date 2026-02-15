@@ -1,0 +1,17 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--font-main);
+	background: var(--color-bg);
+	color: var(--color-text);
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+[data-theme='xp'] body {
+	font-size: 11px;
+}
