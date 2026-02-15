@@ -18,11 +18,14 @@
 	import HostControls from '$lib/components/HostControls.svelte';
 	import VoteStats from '$lib/components/VoteStats.svelte';
 	import IssuePanel from '$lib/components/IssuePanel.svelte';
+	import RevealAnimation from '$lib/components/RevealAnimation.svelte';
 
 	const roomId = $derived($page.params.roomId);
 	let joinName = $state('');
 	let hasJoined = $state(false);
 	let unsubscribe: (() => void) | null = null;
+	let showRevealAnimation = $state(false);
+	let prevStatus = $state('voting');
 
 	$effect(() => {
 		if (!browser || !roomId) return;
@@ -74,6 +77,16 @@
 	const allVoted = $derived(playerList.length > 0 && playerList.every((p) => p.vote !== null));
 	const myVote = $derived($currentPlayer?.vote ?? null);
 	const isRevealed = $derived($roomInfo?.status === 'revealed');
+
+	$effect(() => {
+		if ($roomInfo?.status === 'revealed' && prevStatus === 'voting') {
+			showRevealAnimation = true;
+			setTimeout(() => {
+				showRevealAnimation = false;
+			}, 2500);
+		}
+		prevStatus = $roomInfo?.status ?? 'voting';
+	});
 </script>
 
 <svelte:head>
@@ -105,6 +118,7 @@
 		</div>
 	</div>
 {:else if $roomInfo}
+	<RevealAnimation show={showRevealAnimation} />
 	<div class="room-layout">
 		<header class="room-header">
 			<h1 class="room-title neon-text">PORKER</h1>
