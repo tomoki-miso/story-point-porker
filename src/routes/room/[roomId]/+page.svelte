@@ -15,6 +15,8 @@
 		initRoomSubscription
 	} from '$lib/stores/room-store';
 	import { CARD_VALUES } from '$lib/constants';
+	import HostControls from '$lib/components/HostControls.svelte';
+	import VoteStats from '$lib/components/VoteStats.svelte';
 
 	const roomId = $derived($page.params.roomId);
 	let joinName = $state('');
@@ -155,6 +157,20 @@
 						{/each}
 					</div>
 				</div>
+			{/if}
+
+			{#if $isHost}
+				<HostControls
+					{roomId}
+					room={$roomInfo}
+					players={$players}
+					issues={$issues}
+					{allVoted}
+				/>
+			{/if}
+
+			{#if isRevealed}
+				<VoteStats players={$players} />
 			{/if}
 		</main>
 	</div>
