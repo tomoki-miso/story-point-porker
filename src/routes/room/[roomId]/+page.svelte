@@ -75,7 +75,7 @@
 	}
 
 	const playerList = $derived(Object.values($players));
-	const allVoted = $derived(playerList.length > 0 && playerList.every((p) => p.vote !== null));
+	const allVoted = $derived(playerList.length > 0 && playerList.every((p) => p.vote != null));
 	const myVote = $derived($currentPlayer?.vote ?? null);
 	const isRevealed = $derived($roomInfo?.status === 'revealed');
 
@@ -144,13 +144,14 @@
 			{#snippet playerCard(player: import('$lib/types').Player)}
 				<div
 					class="player-slot"
-					class:voted={player.vote !== null}
+					class:voted={player.vote != null}
+					class:not-voted={player.vote == null && !isRevealed}
 					class:is-me={player.id === $currentPlayerId}
 				>
-					<div class="player-card" class:animate-reveal={isRevealed && player.vote !== null}>
-						{#if isRevealed && player.vote !== null}
+					<div class="player-card" class:animate-reveal={isRevealed && player.vote != null}>
+						{#if isRevealed && player.vote != null}
 							<span class="card-value">{player.vote}</span>
-						{:else if player.vote !== null}
+						{:else if player.vote != null}
 							<span class="card-back">&#10003;</span>
 						{:else}
 							<span class="card-empty">?</span>
@@ -160,6 +161,11 @@
 						{player.name}
 						{#if player.isHost}(Host){/if}
 					</span>
+					{#if !isRevealed}
+						<span class="vote-label" class:done={player.vote != null}>
+							{player.vote != null ? '選択済み' : '未選択'}
+						</span>
+					{/if}
 				</div>
 			{/snippet}
 
@@ -324,6 +330,15 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 0.5rem;
+		transition: opacity 0.3s ease;
+	}
+
+	.not-voted {
+		opacity: 0.5;
+	}
+
+	.not-voted .player-card {
+		border-style: dashed;
 	}
 
 	.player-card {
@@ -376,6 +391,19 @@
 
 	.host-badge {
 		color: var(--color-gold);
+	}
+
+	.vote-label {
+		font-size: 0.7rem;
+		color: var(--color-neon-orange);
+	}
+
+	.vote-label.done {
+		color: var(--color-neon-green);
+	}
+
+	.voted .player-name {
+		color: var(--color-text);
 	}
 
 	.card-selector {

@@ -13,6 +13,9 @@
 	let { roomId, room, players, issues, allVoted }: Props = $props();
 
 	const isRevealed = $derived(room.status === 'revealed');
+	const playerList = $derived(Object.values(players));
+	const votedCount = $derived(playerList.filter((p) => p.vote != null).length);
+	const totalCount = $derived(playerList.length);
 	const hasNextIssue = $derived(room.currentIssueIndex < issues.length - 1);
 
 	function handleReveal() {
@@ -30,6 +33,15 @@
 
 <div class="host-controls">
 	{#if !isRevealed}
+		<div class="vote-status" class:all-voted={allVoted}>
+			{#if allVoted}
+				<span class="status-icon">&#10003;</span>
+				<span>全員選択済み ({totalCount}/{totalCount})</span>
+			{:else}
+				<span class="status-icon pending">&#9679;</span>
+				<span>{votedCount}/{totalCount} 選択済み</span>
+			{/if}
+		</div>
 		<button class="btn-neon btn-neon--green" onclick={handleReveal} disabled={!allVoted}>
 			カードを公開
 		</button>
@@ -46,8 +58,37 @@
 <style>
 	.host-controls {
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
 		padding: 1rem;
+	}
+
+	.vote-status {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		border-radius: var(--radius);
+		background: var(--color-surface);
+		font-size: 0.9rem;
+		color: var(--color-text-muted);
+		transition: all 0.3s ease;
+	}
+
+	.vote-status.all-voted {
+		color: var(--color-neon-green);
+		border: 1px solid var(--color-neon-green);
+		box-shadow: var(--glow-green);
+	}
+
+	.status-icon {
+		font-size: 1.1rem;
+		color: var(--color-neon-green);
+	}
+
+	.status-icon.pending {
+		color: var(--color-neon-orange);
 	}
 
 	.revealed-actions {
