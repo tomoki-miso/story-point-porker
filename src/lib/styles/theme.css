@@ -1,0 +1,207 @@
+:root {
+	/* パチンコ風カラーパレット */
+	--color-bg: #0a0a1a;
+	--color-bg-secondary: #1a1a3e;
+	--color-surface: #2a2a5e;
+	--color-surface-hover: #3a3a7e;
+
+	--color-neon-pink: #ff2d95;
+	--color-neon-blue: #00d4ff;
+	--color-neon-green: #39ff14;
+	--color-neon-yellow: #ffe600;
+	--color-neon-orange: #ff6600;
+	--color-neon-purple: #bf00ff;
+
+	--color-gold: #ffd700;
+	--color-silver: #c0c0c0;
+
+	--color-text: #ffffff;
+	--color-text-muted: #a0a0c0;
+
+	/* グロー効果 */
+	--glow-pink: 0 0 10px var(--color-neon-pink), 0 0 30px var(--color-neon-pink);
+	--glow-blue: 0 0 10px var(--color-neon-blue), 0 0 30px var(--color-neon-blue);
+	--glow-green: 0 0 10px var(--color-neon-green), 0 0 30px var(--color-neon-green);
+	--glow-gold: 0 0 10px var(--color-gold), 0 0 30px var(--color-gold);
+
+	/* フォント */
+	--font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+	--font-display: 'Impact', 'Arial Black', sans-serif;
+
+	/* サイズ */
+	--card-width: 80px;
+	--card-height: 120px;
+	--radius: 12px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--font-main);
+	background: var(--color-bg);
+	color: var(--color-text);
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+/* ネオングロー テキスト */
+.neon-text {
+	text-shadow: var(--glow-pink);
+}
+
+.neon-text-blue {
+	text-shadow: var(--glow-blue);
+}
+
+/* ネオン ボタン */
+.btn-neon {
+	background: transparent;
+	border: 2px solid var(--color-neon-pink);
+	color: var(--color-neon-pink);
+	padding: 12px 32px;
+	font-size: 1rem;
+	font-weight: bold;
+	border-radius: var(--radius);
+	cursor: pointer;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.btn-neon:hover {
+	background: var(--color-neon-pink);
+	color: var(--color-bg);
+	box-shadow: var(--glow-pink);
+}
+
+.btn-neon:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.btn-neon--blue {
+	border-color: var(--color-neon-blue);
+	color: var(--color-neon-blue);
+}
+
+.btn-neon--blue:hover {
+	background: var(--color-neon-blue);
+	color: var(--color-bg);
+	box-shadow: var(--glow-blue);
+}
+
+.btn-neon--green {
+	border-color: var(--color-neon-green);
+	color: var(--color-neon-green);
+}
+
+.btn-neon--green:hover {
+	background: var(--color-neon-green);
+	color: var(--color-bg);
+	box-shadow: var(--glow-green);
+}
+
+/* ネオン入力フィールド */
+.input-neon {
+	background: var(--color-bg-secondary);
+	border: 2px solid var(--color-surface);
+	color: var(--color-text);
+	padding: 12px 16px;
+	font-size: 1rem;
+	border-radius: var(--radius);
+	outline: none;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	width: 100%;
+}
+
+.input-neon:focus {
+	border-color: var(--color-neon-blue);
+	box-shadow: var(--glow-blue);
+}
+
+/* カード公開アニメーション */
+@keyframes card-reveal {
+	0% {
+		transform: rotateY(180deg) scale(0.8);
+		opacity: 0;
+	}
+	50% {
+		transform: rotateY(90deg) scale(1.1);
+	}
+	100% {
+		transform: rotateY(0deg) scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes neon-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.7;
+	}
+}
+
+@keyframes rainbow-border {
+	0% {
+		border-color: var(--color-neon-pink);
+	}
+	25% {
+		border-color: var(--color-neon-blue);
+	}
+	50% {
+		border-color: var(--color-neon-green);
+	}
+	75% {
+		border-color: var(--color-neon-yellow);
+	}
+	100% {
+		border-color: var(--color-neon-pink);
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@keyframes sparkle {
+	0%,
+	100% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.animate-reveal {
+	animation: card-reveal 0.6s ease-out forwards;
+}
+
+.animate-pulse {
+	animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.animate-rainbow {
+	animation: rainbow-border 3s linear infinite;
+}
+
+.animate-float {
+	animation: float 3s ease-in-out infinite;
+}
