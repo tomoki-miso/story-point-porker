@@ -3,6 +3,7 @@
 	import '../app.css';
 	import { theme } from '$lib/stores/theme-store';
 	import { browser } from '$app/environment';
+	import XpAssistant from '$lib/components/XpAssistant.svelte';
 
 	let { children } = $props();
 
@@ -18,3 +19,4 @@
 </svelte:head>
 
 {@render children()}
+<XpAssistant />
