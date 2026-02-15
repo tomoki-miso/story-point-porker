@@ -2,8 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { createRoom, roomExists } from '$lib/room-service';
 	import { browser } from '$app/environment';
-	import { theme } from '$lib/stores/theme-store';
-
 	let hostName = $state('');
 	let joinRoomId = $state('');
 	let joinName = $state('');
@@ -34,9 +32,6 @@
 		goto(`/room/${joinRoomId.trim()}`);
 	}
 
-	function toggleTheme() {
-		$theme = $theme === 'neon' ? 'xp' : 'neon';
-	}
 </script>
 
 <svelte:head>
@@ -44,10 +39,6 @@
 </svelte:head>
 
 <div class="container">
-	<button class="theme-toggle" onclick={toggleTheme}>
-		{$theme === 'neon' ? 'XP Theme' : 'Neon Theme'}
-	</button>
-
 	<header class="header">
 		<h1 class="title neon-text">STORY POINT</h1>
 		<h2 class="subtitle neon-text-blue">PORKER</h2>
@@ -137,38 +128,6 @@
 		justify-content: center;
 		padding: 2rem;
 		position: relative;
-	}
-
-	.theme-toggle {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-text-muted);
-		color: var(--color-text-muted);
-		padding: 0.4rem 1rem;
-		border-radius: var(--radius);
-		cursor: pointer;
-		font-size: 0.85rem;
-		transition: all 0.2s ease;
-	}
-
-	.theme-toggle:hover {
-		color: var(--color-text);
-		border-color: var(--color-text);
-	}
-
-	:global([data-theme='xp']) .theme-toggle {
-		background: linear-gradient(180deg, #ffffff 0%, #ece9d8 90%, #d6d2c2 100%);
-		border: 1px solid var(--color-button-dk-shadow);
-		color: var(--color-text);
-		box-shadow:
-			inset 1px 1px 0 var(--color-button-highlight),
-			inset -1px -1px 0 var(--color-button-shadow);
-	}
-
-	:global([data-theme='xp']) .theme-toggle:hover {
-		background: linear-gradient(180deg, #fff4cf 0%, #ffd870 100%);
 	}
 
 	.header {
