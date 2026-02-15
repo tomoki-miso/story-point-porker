@@ -49,10 +49,8 @@
 フィボナッチ風の数列を使用:
 
 ```
-0, 1, 2, 3, 5, 8, 13, 21, ?
+1, 2, 3, 5, 8, 13, 21
 ```
-
-- `?` は「わからない / 見積もり不能」を意味する
 
 #### 3.2.2 カード選択
 - 各参加者はカード一覧から1枚を選択する
@@ -90,11 +88,10 @@
 
 | 統計項目 | 説明 |
 |----------|------|
-| 平均値 | 全投票の平均（`?` は除外） |
-| 中央値 | 全投票の中央値（`?` は除外） |
-| 最小値 / 最大値 | 投票の範囲 |
+| 平均値 | 全投票の平均 |
+| 中央値 | 全投票の中央値 |
 | 分布 | 各カードに何人が投票したかの棒グラフ |
-| 一致率 | 全員が同じ値を選んだかどうか |
+| 投票数 | 投票した人数 |
 
 ### 3.5 ホスト権限
 
@@ -111,6 +108,26 @@
 - カードの選択・変更
 - 参加者一覧の閲覧
 - 投票結果・統計の閲覧
+
+### 3.6 テーマ切替
+
+- ネオンテーマ（デフォルト）と Windows XP Luna テーマを切替可能
+- テーマ設定は `localStorage` に永続化
+- XP テーマ時にはクリッピー風のイルカアシスタントが表示される
+
+### 3.7 自動クリーンアップ
+
+- ホストがブラウザを閉じた場合、Firebase `onDisconnect` でルーム全体を自動削除
+- プレイヤーがブラウザを閉じた場合、Firebase `onDisconnect` で該当プレイヤーデータを自動削除
+
+### 3.8 URL自動リンク
+
+- 議題タイトル中の URL（`https://...`）を自動検出し、クリック可能なリンクとして表示
+
+### 3.9 投票状況インジケータ
+
+- 投票済み/未投票の人数をリアルタイムで表示（例: `3/5 選択済み`）
+- 全員投票完了時に視覚的に強調表示
 
 ---
 
@@ -140,7 +157,7 @@
 ## 5. UIデザイン要件
 
 ### 5.1 テイスト
-**パチンコ風 - 派手でカラフル**
+**パチンコ風 - 派手でカラフル**（ネオンテーマ） / **Windows XP Luna**（XPテーマ）
 
 ### 5.2 カラーパレット
 - ネオンカラーを基調（ピンク、シアン、イエロー、グリーン）
@@ -164,24 +181,23 @@
 ```
 rooms/
   {roomId}/
+    id: string
     createdAt: timestamp
     hostId: string
     currentIssueIndex: number
-    status: "voting" | "revealed" | "idle"
+    status: "voting" | "revealed"
     issues/
       {issueId}/
+        id: string
         title: string
-        description: string
-        status: "pending" | "voting" | "revealed" | "confirmed"
-        confirmedPoint: number | null
-        order: number
-    participants/
-      {participantId}/
+        result: string | null
+    players/
+      {playerId}/
+        id: string
         name: string
         joinedAt: timestamp
         isHost: boolean
-        vote: number | "?" | null
-        hasVoted: boolean
+        vote: string | null
 ```
 
 ---
@@ -214,4 +230,3 @@ rooms/
 - カスタムカード数列
 - オブザーバーモード（見学のみ）
 - チャット機能
-- ダークモード / ライトモード切替

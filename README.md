@@ -8,9 +8,16 @@
 - **リアルタイム投票** - Firebase Realtime Database による即時同期
 - **ホスト制御** - カード公開・リセット・次の議題への進行をホストが管理
 - **投票統計** - 平均値・中央値・分布をカード公開時に自動表示
+- **投票状況インジケータ** - 投票済み/未投票の人数をリアルタイム表示
 - **議題管理** - ホストが議題リストを作成し、順番に進行
+- **URL自動リンク** - 議題タイトル中のURLが自動でクリック可能に
+- **テーマ切替** - ネオンテーマと Windows XP Luna テーマのトグル切替（localStorage で永続化）
+- **XP アシスタント（イルカ）** - XPテーマ時にクリッピー風のイルカアシスタントが表示
+- **自動クリーンアップ** - ホスト/プレイヤーの切断時に Firebase onDisconnect で自動削除
 - **パチンコ風演出** - カード公開時にネオンパーティクル + "OPEN!" アニメーション
 - **レスポンシブ対応** - PC・モバイル両対応
+
+カード数列: `1, 2, 3, 5, 8, 13, 21`
 
 ## 技術スタック
 
@@ -105,15 +112,21 @@ src/
 │   ├── room-service.ts              # Firebase CRUD操作
 │   ├── stats.ts                     # 投票統計計算
 │   ├── stats.test.ts                # 統計計算のテスト
+│   ├── assets/
+│   │   ├── iruka.svg                # イルカアイコン（favicon兼用）
+│   │   └── iruka.png                # イルカ画像
 │   ├── stores/
-│   │   └── room-store.ts            # Svelte ストア (ルーム状態管理)
+│   │   ├── room-store.ts            # Svelte ストア (ルーム状態管理)
+│   │   └── theme-store.ts           # テーマ状態管理ストア
 │   ├── components/
+│   │   ├── AppHeader.svelte         # ヘッダー（ロゴ + テーマトグル）
 │   │   ├── HostControls.svelte      # ホスト用操作パネル
 │   │   ├── VoteStats.svelte         # 投票結果統計表示
 │   │   ├── IssuePanel.svelte        # 議題管理パネル
-│   │   └── RevealAnimation.svelte   # カード公開アニメーション
+│   │   ├── RevealAnimation.svelte   # カード公開アニメーション
+│   │   └── XpAssistant.svelte       # XP イルカアシスタント
 │   └── styles/
-│       └── theme.css                # パチンコ風ネオンテーマ
+│       └── theme.css                # テーマCSS変数（ネオン / XP Luna）
 └── routes/
     ├── +layout.svelte               # ルートレイアウト
     ├── +page.svelte                 # トップページ
