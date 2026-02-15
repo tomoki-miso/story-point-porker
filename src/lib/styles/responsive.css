@@ -1,0 +1,6 @@
+@media (max-width: 768px) {
+	:root {
+		--card-width: 60px;
+		--card-height: 90px;
+	}
+}
