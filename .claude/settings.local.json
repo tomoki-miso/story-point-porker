@@ -7,7 +7,10 @@
       "Bash(npx sv create:*)",
       "Bash(npm install:*)",
       "Bash(timeout 10 npm run dev:*)",
-      "Bash(npx vitest run:*)"
+      "Bash(npx vitest run:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run check:*)",
+      "Bash(ls:*)"
     ]
   }
 }
