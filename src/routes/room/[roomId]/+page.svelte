@@ -131,26 +131,30 @@
 
 {#if !hasJoined}
 	<div class="join-container">
-		<div class="form-card">
-			<h2 class="neon-text-blue">ルームに参加</h2>
-			<p class="room-id">Room: <span class="neon-text">{roomId}</span></p>
-			<form
-				onsubmit={(e) => {
-					e.preventDefault();
-					handleJoin();
-				}}
-			>
-				<input
-					class="input-neon"
-					type="text"
-					placeholder="あなたの名前"
-					bind:value={joinName}
-					maxlength="20"
-				/>
-				<button class="btn-neon btn-neon--green" type="submit" disabled={!joinName.trim()}>
-					参加する
-				</button>
-			</form>
+		<div class="xp-window join-wrapper">
+			<div class="xp-titlebar"><span class="neon-text-blue">ルームに参加</span></div>
+			<div class="xp-window-body">
+				<div class="form-card">
+					<p class="room-id">Room: <span class="neon-text">{roomId}</span></p>
+					<form
+						onsubmit={(e) => {
+							e.preventDefault();
+							handleJoin();
+						}}
+					>
+						<input
+							class="input-neon"
+							type="text"
+							placeholder="あなたの名前"
+							bind:value={joinName}
+							maxlength="20"
+						/>
+						<button class="btn-neon btn-neon--green" type="submit" disabled={!joinName.trim()}>
+							参加する
+						</button>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 {:else if $roomInfo}
@@ -264,17 +268,28 @@
 		padding: 2rem;
 	}
 
+	.join-wrapper {
+		width: 100%;
+		max-width: 400px;
+	}
+
 	.form-card {
 		background: var(--color-bg-secondary);
 		border: 2px solid var(--color-surface);
 		border-radius: var(--radius);
 		padding: 2rem;
 		width: 100%;
-		max-width: 400px;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		text-align: center;
+	}
+
+	:global([data-theme='xp']) .form-card {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		padding: 0;
 	}
 
 	form {
@@ -301,6 +316,11 @@
 		border-bottom: 2px solid var(--color-surface);
 	}
 
+	:global([data-theme='xp']) .room-header {
+		background: var(--color-button-face);
+		border-bottom: 1px solid var(--color-button-shadow);
+	}
+
 	.room-title {
 		font-family: var(--font-display);
 		font-size: 1.8rem;
@@ -321,6 +341,12 @@
 		color: var(--color-text-muted);
 	}
 
+	:global([data-theme='xp']) .room-id-badge {
+		background: var(--color-window);
+		border: 1px solid var(--color-button-shadow);
+		box-shadow: inset 1px 1px 0 var(--color-button-shadow);
+	}
+
 	.btn-leave {
 		background: none;
 		border: 1px solid var(--color-text-muted);
@@ -334,6 +360,23 @@
 	.btn-leave:hover {
 		border-color: var(--color-neon-orange);
 		color: var(--color-neon-orange);
+	}
+
+	:global([data-theme='xp']) .btn-leave,
+	:global([data-theme='xp']) .btn-copy {
+		background: linear-gradient(180deg, #ffffff 0%, #ece9d8 90%, #d6d2c2 100%);
+		border: 1px solid var(--color-button-dk-shadow);
+		color: var(--color-text);
+		box-shadow:
+			inset 1px 1px 0 var(--color-button-highlight),
+			inset -1px -1px 0 var(--color-button-shadow);
+	}
+
+	:global([data-theme='xp']) .btn-leave:hover,
+	:global([data-theme='xp']) .btn-copy:hover {
+		background: linear-gradient(180deg, #fff4cf 0%, #ffd870 100%);
+		border-color: var(--color-button-dk-shadow);
+		color: var(--color-text);
 	}
 
 	.room-body {
@@ -376,6 +419,11 @@
 		border-style: dashed;
 	}
 
+	:global([data-theme='xp']) .not-voted .player-card {
+		border-color: var(--color-button-shadow);
+		background: #f5f5f0;
+	}
+
 	.player-card {
 		width: var(--card-width);
 		height: var(--card-height);
@@ -390,19 +438,43 @@
 		transition: all 0.3s ease;
 	}
 
+	:global([data-theme='xp']) .player-card {
+		background: var(--color-window);
+		border: 2px solid var(--color-button-dk-shadow);
+		box-shadow:
+			inset 1px 1px 0 var(--color-button-highlight),
+			inset -1px -1px 0 var(--color-button-shadow);
+	}
+
 	.voted .player-card {
 		border-color: var(--color-neon-green);
 		box-shadow: var(--glow-green);
+	}
+
+	:global([data-theme='xp']) .voted .player-card {
+		border-color: var(--color-neon-green);
+		background: #e8f5e8;
+		box-shadow: none;
 	}
 
 	.is-me .player-card {
 		border-color: var(--color-neon-blue);
 	}
 
+	:global([data-theme='xp']) .is-me .player-card {
+		border-color: var(--color-neon-pink);
+		border-width: 3px;
+	}
+
 	.card-value {
 		color: var(--color-neon-yellow);
 		font-size: 2rem;
 		text-shadow: var(--glow-gold);
+	}
+
+	:global([data-theme='xp']) .card-value {
+		color: var(--color-neon-pink);
+		text-shadow: none;
 	}
 
 	.card-back {
@@ -412,6 +484,10 @@
 	.card-empty {
 		color: var(--color-text-muted);
 		opacity: 0.3;
+	}
+
+	:global([data-theme='xp']) .card-empty {
+		color: var(--color-button-shadow);
 	}
 
 	.player-name {
@@ -490,6 +566,29 @@
 		transform: translateY(-8px);
 	}
 
+	:global([data-theme='xp']) .poker-card {
+		background: linear-gradient(180deg, #ffffff 0%, #f5f3eb 100%);
+		border: 2px solid var(--color-button-dk-shadow);
+		border-radius: 4px;
+		box-shadow:
+			inset 1px 1px 0 var(--color-button-highlight),
+			inset -1px -1px 0 var(--color-button-shadow);
+	}
+
+	:global([data-theme='xp']) .poker-card:hover {
+		border-color: var(--color-neon-pink);
+		box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+		transform: translateY(-4px);
+	}
+
+	:global([data-theme='xp']) .poker-card.selected {
+		background: linear-gradient(180deg, #4e98ff 0%, #0054e3 100%);
+		color: #ffffff;
+		border-color: #003cad;
+		box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.3);
+		transform: translateY(-6px);
+	}
+
 	.btn-copy {
 		background: none;
 		border: 1px solid var(--color-neon-blue);
@@ -512,6 +611,10 @@
 		align-items: center;
 		justify-content: center;
 		font-size: 2rem;
+	}
+
+	:global([data-theme='xp']) .loading {
+		color: #ffffff;
 	}
 
 	@media (max-width: 768px) {

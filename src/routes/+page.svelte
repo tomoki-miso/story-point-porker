@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { createRoom, roomExists } from '$lib/room-service';
 	import { browser } from '$app/environment';
+	import { theme } from '$lib/stores/theme-store';
 
 	let hostName = $state('');
 	let joinRoomId = $state('');
@@ -32,6 +33,10 @@
 		}
 		goto(`/room/${joinRoomId.trim()}`);
 	}
+
+	function toggleTheme() {
+		$theme = $theme === 'neon' ? 'xp' : 'neon';
+	}
 </script>
 
 <svelte:head>
@@ -39,6 +44,10 @@
 </svelte:head>
 
 <div class="container">
+	<button class="theme-toggle" onclick={toggleTheme}>
+		{$theme === 'neon' ? 'XP Theme' : 'Neon Theme'}
+	</button>
+
 	<header class="header">
 		<h1 class="title neon-text">STORY POINT</h1>
 		<h2 class="subtitle neon-text-blue">PORKER</h2>
@@ -51,62 +60,70 @@
 			<button class="btn-neon btn-neon--blue" onclick={() => (mode = 'join')}>ルームに参加</button>
 		</div>
 	{:else if mode === 'create'}
-		<div class="form-card">
-			<h3 class="form-title neon-text">ルーム作成</h3>
-			<form
-				onsubmit={(e) => {
-					e.preventDefault();
-					handleCreate();
-				}}
-			>
-				<input
-					class="input-neon"
-					type="text"
-					placeholder="あなたの名前"
-					bind:value={hostName}
-					maxlength="20"
-				/>
-				<button class="btn-neon btn-neon--green" type="submit" disabled={!hostName.trim()}>
-					作成してスタート
-				</button>
-			</form>
-			<button class="btn-back" onclick={() => (mode = 'home')}>戻る</button>
+		<div class="xp-window form-wrapper">
+			<div class="xp-titlebar"><span class="neon-text">ルーム作成</span></div>
+			<div class="xp-window-body">
+				<div class="form-card">
+					<form
+						onsubmit={(e) => {
+							e.preventDefault();
+							handleCreate();
+						}}
+					>
+						<input
+							class="input-neon"
+							type="text"
+							placeholder="あなたの名前"
+							bind:value={hostName}
+							maxlength="20"
+						/>
+						<button class="btn-neon btn-neon--green" type="submit" disabled={!hostName.trim()}>
+							作成してスタート
+						</button>
+					</form>
+					<button class="btn-back" onclick={() => (mode = 'home')}>戻る</button>
+				</div>
+			</div>
 		</div>
 	{:else}
-		<div class="form-card">
-			<h3 class="form-title neon-text-blue">ルーム参加</h3>
-			<form
-				onsubmit={(e) => {
-					e.preventDefault();
-					handleJoin();
-				}}
-			>
-				<input
-					class="input-neon"
-					type="text"
-					placeholder="ルームID"
-					bind:value={joinRoomId}
-					maxlength="20"
-				/>
-				<input
-					class="input-neon"
-					type="text"
-					placeholder="あなたの名前"
-					bind:value={joinName}
-					maxlength="20"
-				/>
-				{#if errorMessage}
-					<p class="error">{errorMessage}</p>
-				{/if}
-				<button
-					class="btn-neon btn-neon--green"
-					type="submit"
-					disabled={!joinRoomId.trim() || !joinName.trim()}
-				>
-					参加する
-				</button>
-			</form>
-			<button class="btn-back" onclick={() => (mode = 'home')}>戻る</button>
+		<div class="xp-window form-wrapper">
+			<div class="xp-titlebar"><span class="neon-text-blue">ルーム参加</span></div>
+			<div class="xp-window-body">
+				<div class="form-card">
+					<form
+						onsubmit={(e) => {
+							e.preventDefault();
+							handleJoin();
+						}}
+					>
+						<input
+							class="input-neon"
+							type="text"
+							placeholder="ルームID"
+							bind:value={joinRoomId}
+							maxlength="20"
+						/>
+						<input
+							class="input-neon"
+							type="text"
+							placeholder="あなたの名前"
+							bind:value={joinName}
+							maxlength="20"
+						/>
+						{#if errorMessage}
+							<p class="error">{errorMessage}</p>
+						{/if}
+						<button
+							class="btn-neon btn-neon--green"
+							type="submit"
+							disabled={!joinRoomId.trim() || !joinName.trim()}
+						>
+							参加する
+						</button>
+					</form>
+					<button class="btn-back" onclick={() => (mode = 'home')}>戻る</button>
+				</div>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -119,6 +136,39 @@
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
+		position: relative;
+	}
+
+	.theme-toggle {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-text-muted);
+		color: var(--color-text-muted);
+		padding: 0.4rem 1rem;
+		border-radius: var(--radius);
+		cursor: pointer;
+		font-size: 0.85rem;
+		transition: all 0.2s ease;
+	}
+
+	.theme-toggle:hover {
+		color: var(--color-text);
+		border-color: var(--color-text);
+	}
+
+	:global([data-theme='xp']) .theme-toggle {
+		background: linear-gradient(180deg, #ffffff 0%, #ece9d8 90%, #d6d2c2 100%);
+		border: 1px solid var(--color-button-dk-shadow);
+		color: var(--color-text);
+		box-shadow:
+			inset 1px 1px 0 var(--color-button-highlight),
+			inset -1px -1px 0 var(--color-button-shadow);
+	}
+
+	:global([data-theme='xp']) .theme-toggle:hover {
+		background: linear-gradient(180deg, #fff4cf 0%, #ffd870 100%);
 	}
 
 	.header {
@@ -148,6 +198,20 @@
 		letter-spacing: 4px;
 	}
 
+	:global([data-theme='xp']) .title {
+		color: #ffffff;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	:global([data-theme='xp']) .subtitle {
+		color: #ffffff;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	:global([data-theme='xp']) .tagline {
+		color: #b4d6ff;
+	}
+
 	.actions {
 		display: flex;
 		gap: 2rem;
@@ -155,22 +219,26 @@
 		justify-content: center;
 	}
 
+	.form-wrapper {
+		width: 100%;
+		max-width: 400px;
+	}
+
 	.form-card {
 		background: var(--color-bg-secondary);
 		border: 2px solid var(--color-surface);
 		border-radius: var(--radius);
 		padding: 2rem;
-		width: 100%;
-		max-width: 400px;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 	}
 
-	.form-title {
-		text-align: center;
-		font-size: 1.5rem;
-		margin-bottom: 0.5rem;
+	:global([data-theme='xp']) .form-card {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		padding: 0;
 	}
 
 	form {
@@ -185,6 +253,10 @@
 		text-align: center;
 	}
 
+	:global([data-theme='xp']) .error {
+		color: #c00000;
+	}
+
 	.btn-back {
 		background: none;
 		border: none;
@@ -197,6 +269,11 @@
 
 	.btn-back:hover {
 		color: var(--color-text);
+	}
+
+	:global([data-theme='xp']) .btn-back:hover {
+		text-decoration: underline;
+		color: var(--color-neon-pink);
 	}
 
 	@media (max-width: 768px) {

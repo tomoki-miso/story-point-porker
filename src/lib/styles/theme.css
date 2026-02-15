@@ -1,5 +1,5 @@
 :root {
-	/* パチンコ風カラーパレット */
+	/* パチンコ風カラーパレット (Neon theme - default) */
 	--color-bg: #0a0a1a;
 	--color-bg-secondary: #1a1a3e;
 	--color-surface: #2a2a5e;
@@ -34,6 +34,56 @@
 	--radius: 12px;
 }
 
+/* ========================================
+   Windows XP Luna Blue Theme
+   ======================================== */
+[data-theme='xp'] {
+	--color-bg: #0078d7;
+	--color-bg-secondary: #ece9d8;
+	--color-surface: #d6d2c2;
+	--color-surface-hover: #e8e4d4;
+
+	--color-neon-pink: #0054e3;
+	--color-neon-blue: #316ac5;
+	--color-neon-green: #37b337;
+	--color-neon-yellow: #ebb214;
+	--color-neon-orange: #ff8c00;
+	--color-neon-purple: #7a96df;
+
+	--color-gold: #ebb214;
+	--color-silver: #c0c0c0;
+
+	--color-text: #000000;
+	--color-text-muted: #544e3f;
+
+	/* グロー効果を無効化 */
+	--glow-pink: none;
+	--glow-blue: none;
+	--glow-green: none;
+	--glow-gold: none;
+
+	/* フォント */
+	--font-main: 'Tahoma', 'Segoe UI', 'Verdana', sans-serif;
+	--font-display: 'Trebuchet MS', 'Tahoma', sans-serif;
+
+	--radius: 3px;
+
+	/* XP 固有変数 */
+	--color-window: #ffffff;
+	--color-button-face: #ece9d8;
+	--color-button-highlight: #ffffff;
+	--color-button-shadow: #aca899;
+	--color-button-dk-shadow: #716f64;
+	--color-titlebar-start: #0054e3;
+	--color-titlebar-end: #4e98ff;
+	--color-input-border: #7f9db9;
+	--shadow-window: 2px 2px 6px rgba(0, 0, 0, 0.3);
+	--radius-window: 8px;
+}
+
+/* ========================================
+   Base Reset & Body
+   ======================================== */
 * {
 	margin: 0;
 	padding: 0;
@@ -48,7 +98,13 @@ body {
 	overflow-x: hidden;
 }
 
-/* ネオングロー テキスト */
+[data-theme='xp'] body {
+	font-size: 11px;
+}
+
+/* ========================================
+   Neon Text Utilities
+   ======================================== */
 .neon-text {
 	text-shadow: var(--glow-pink);
 }
@@ -57,7 +113,21 @@ body {
 	text-shadow: var(--glow-blue);
 }
 
-/* ネオン ボタン */
+[data-theme='xp'] .neon-text {
+	color: var(--color-neon-pink);
+	text-shadow: none;
+	font-family: var(--font-display);
+	font-weight: bold;
+}
+
+[data-theme='xp'] .neon-text-blue {
+	color: var(--color-neon-blue);
+	text-shadow: none;
+}
+
+/* ========================================
+   Neon Button
+   ======================================== */
 .btn-neon {
 	background: transparent;
 	border: 2px solid var(--color-neon-pink);
@@ -107,7 +177,57 @@ body {
 	box-shadow: var(--glow-green);
 }
 
-/* ネオン入力フィールド */
+/* XP Button Override */
+[data-theme='xp'] .btn-neon {
+	background: linear-gradient(180deg, #ffffff 0%, #ece9d8 90%, #d6d2c2 100%);
+	border: 1px solid var(--color-button-dk-shadow);
+	color: var(--color-text);
+	border-radius: 3px;
+	text-transform: none;
+	letter-spacing: normal;
+	box-shadow:
+		inset 1px 1px 0 var(--color-button-highlight),
+		inset -1px -1px 0 var(--color-button-shadow);
+}
+
+[data-theme='xp'] .btn-neon:hover {
+	background: linear-gradient(180deg, #fff4cf 0%, #ffd870 100%);
+	color: var(--color-text);
+	box-shadow:
+		inset 1px 1px 0 var(--color-button-highlight),
+		inset -1px -1px 0 var(--color-button-shadow);
+}
+
+[data-theme='xp'] .btn-neon:active {
+	background: linear-gradient(180deg, #d6d2c2 0%, #ece9d8 100%);
+	box-shadow:
+		inset 1px 1px 0 var(--color-button-shadow),
+		inset -1px -1px 0 var(--color-button-highlight);
+}
+
+[data-theme='xp'] .btn-neon:disabled {
+	color: var(--color-button-shadow);
+	opacity: 1;
+}
+
+[data-theme='xp'] .btn-neon--blue,
+[data-theme='xp'] .btn-neon--green {
+	border-color: var(--color-button-dk-shadow);
+	color: var(--color-text);
+}
+
+[data-theme='xp'] .btn-neon--blue:hover,
+[data-theme='xp'] .btn-neon--green:hover {
+	background: linear-gradient(180deg, #fff4cf 0%, #ffd870 100%);
+	color: var(--color-text);
+	box-shadow:
+		inset 1px 1px 0 var(--color-button-highlight),
+		inset -1px -1px 0 var(--color-button-shadow);
+}
+
+/* ========================================
+   Neon Input
+   ======================================== */
 .input-neon {
 	background: var(--color-bg-secondary);
 	border: 2px solid var(--color-surface);
@@ -125,7 +245,74 @@ body {
 	box-shadow: var(--glow-blue);
 }
 
-/* カード公開アニメーション */
+/* XP Input Override */
+[data-theme='xp'] .input-neon {
+	background: #ffffff;
+	border: 1px solid var(--color-input-border);
+	color: var(--color-text);
+	border-radius: 0;
+}
+
+[data-theme='xp'] .input-neon:focus {
+	border-color: var(--color-neon-blue);
+	box-shadow: none;
+}
+
+/* ========================================
+   XP Window Components
+   (Neon: transparent wrappers / XP: window frame)
+   ======================================== */
+.xp-window {
+	/* Neon mode: transparent wrapper */
+}
+
+.xp-titlebar {
+	/* Neon mode: acts as centered title heading */
+	text-align: center;
+	margin-bottom: 0.5rem;
+	font-size: 1.5rem;
+}
+
+.xp-window-body {
+	/* Neon mode: transparent wrapper */
+}
+
+/* XP mode: full window frame */
+[data-theme='xp'] .xp-window {
+	background: var(--color-button-face);
+	border: 2px solid var(--color-button-dk-shadow);
+	border-radius: var(--radius-window);
+	box-shadow: var(--shadow-window);
+	overflow: hidden;
+}
+
+[data-theme='xp'] .xp-titlebar {
+	background: linear-gradient(180deg, var(--color-titlebar-start), var(--color-titlebar-end));
+	color: #ffffff;
+	font-family: var(--font-display);
+	font-weight: bold;
+	font-size: 13px;
+	padding: 6px 10px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+	text-align: left;
+	margin-bottom: 0;
+	border-radius: 0;
+}
+
+[data-theme='xp'] .xp-titlebar .neon-text,
+[data-theme='xp'] .xp-titlebar .neon-text-blue {
+	color: #ffffff;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='xp'] .xp-window-body {
+	padding: 12px;
+	background: var(--color-button-face);
+}
+
+/* ========================================
+   Animations
+   ======================================== */
 @keyframes card-reveal {
 	0% {
 		transform: rotateY(180deg) scale(0.8);
@@ -218,6 +405,22 @@ body {
 	animation: float 3s ease-in-out infinite;
 }
 
+/* XP Animation Overrides */
+[data-theme='xp'] .animate-pulse {
+	animation: neon-pulse 3s ease-in-out infinite;
+}
+
+[data-theme='xp'] .animate-rainbow {
+	animation: none;
+}
+
+[data-theme='xp'] .animate-float {
+	animation: none;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
 @media (max-width: 768px) {
 	:root {
 		--card-width: 60px;

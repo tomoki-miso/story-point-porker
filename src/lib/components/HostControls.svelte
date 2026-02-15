@@ -76,10 +76,22 @@
 		transition: all 0.3s ease;
 	}
 
+	:global([data-theme='xp']) .vote-status {
+		background: var(--color-window);
+		border: 1px solid var(--color-input-border);
+		border-radius: 3px;
+	}
+
 	.vote-status.all-voted {
 		color: var(--color-neon-green);
 		border: 1px solid var(--color-neon-green);
 		box-shadow: var(--glow-green);
+	}
+
+	:global([data-theme='xp']) .vote-status.all-voted {
+		border-color: var(--color-neon-green);
+		background: #e8f5e8;
+		box-shadow: none;
 	}
 
 	.status-icon {
