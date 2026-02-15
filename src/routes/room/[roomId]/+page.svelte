@@ -17,6 +17,7 @@
 	import { CARD_VALUES } from '$lib/constants';
 	import HostControls from '$lib/components/HostControls.svelte';
 	import VoteStats from '$lib/components/VoteStats.svelte';
+	import IssuePanel from '$lib/components/IssuePanel.svelte';
 
 	const roomId = $derived($page.params.roomId);
 	let joinName = $state('');
@@ -113,6 +114,7 @@
 			</div>
 		</header>
 
+		<div class="room-body">
 		<main class="room-main">
 			{#snippet playerCard(player: import('$lib/types').Player)}
 				<div
@@ -173,6 +175,13 @@
 				<VoteStats players={$players} />
 			{/if}
 		</main>
+		<IssuePanel
+			{roomId}
+			issues={$issues}
+			currentIndex={$roomInfo?.currentIssueIndex ?? 0}
+			isHost={$isHost}
+		/>
+		</div>
 	</div>
 {:else}
 	<div class="loading">
@@ -261,12 +270,19 @@
 		color: var(--color-neon-orange);
 	}
 
+	.room-body {
+		flex: 1;
+		display: flex;
+		gap: 1rem;
+		padding: 1rem 2rem;
+	}
+
 	.room-main {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 2rem;
+		padding: 1rem;
 		gap: 2rem;
 	}
 
