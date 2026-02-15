@@ -104,3 +104,7 @@ export function subscribeToRoom(
 export function leaveRoom(roomId: string, playerId: string): void {
 	remove(ref(db, `rooms/${roomId}/players/${playerId}`));
 }
+
+export function deleteRoom(roomId: string): void {
+	remove(ref(db, `rooms/${roomId}`));
+}

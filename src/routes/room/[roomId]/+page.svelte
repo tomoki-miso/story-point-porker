@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { joinRoom, vote as submitVote, leaveRoom } from '$lib/room-service';
+	import { joinRoom, vote as submitVote, leaveRoom, deleteRoom } from '$lib/room-service';
 	import {
 		roomData,
 		roomInfo,
@@ -20,13 +20,15 @@
 	import IssuePanel from '$lib/components/IssuePanel.svelte';
 	import RevealAnimation from '$lib/components/RevealAnimation.svelte';
 
-	const roomId = $derived($page.params.roomId);
+	const roomId: string = $derived($page.params.roomId ?? '');
 	let joinName = $state('');
 	let hasJoined = $state(false);
 	let unsubscribe: (() => void) | null = null;
 	let showRevealAnimation = $state(false);
 	let prevStatus = $state('voting');
 	let copyLabel = $state('URLをコピー');
+
+	let hasReceivedData = $state(false);
 
 	$effect(() => {
 		if (!browser || !roomId) return;
@@ -42,6 +44,35 @@
 		const savedName = sessionStorage.getItem(`playerName_${roomId}`);
 		if (savedName) {
 			joinName = savedName;
+		}
+
+		const onBeforeUnload = () => {
+			if ($isHost) {
+				deleteRoom(roomId);
+				sessionStorage.removeItem(`player_${roomId}`);
+				sessionStorage.removeItem(`playerName_${roomId}`);
+			}
+		};
+		window.addEventListener('beforeunload', onBeforeUnload);
+
+		return () => {
+			window.removeEventListener('beforeunload', onBeforeUnload);
+		};
+	});
+
+	// Firebaseからデータを受信したことを追跡
+	$effect(() => {
+		if ($roomData !== null) {
+			hasReceivedData = true;
+		}
+	});
+
+	// ルームが削除されたら他プレイヤーをトップに遷移
+	$effect(() => {
+		if (hasReceivedData && $roomData === null) {
+			sessionStorage.removeItem(`player_${roomId}`);
+			sessionStorage.removeItem(`playerName_${roomId}`);
+			goto('/');
 		}
 	});
 
@@ -67,7 +98,11 @@
 	function handleLeave() {
 		const pid = $currentPlayerId;
 		if (pid) {
-			leaveRoom(roomId, pid);
+			if ($isHost) {
+				deleteRoom(roomId);
+			} else {
+				leaveRoom(roomId, pid);
+			}
 			sessionStorage.removeItem(`player_${roomId}`);
 			sessionStorage.removeItem(`playerName_${roomId}`);
 		}
