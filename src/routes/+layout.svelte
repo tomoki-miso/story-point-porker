@@ -1,5 +1,5 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/iruka.svg';
 	import '../app.css';
 	import { theme } from '$lib/stores/theme-store';
 	import { browser } from '$app/environment';
