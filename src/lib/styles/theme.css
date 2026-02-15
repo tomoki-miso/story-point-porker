@@ -262,9 +262,6 @@ body {
    XP Window Components
    (Neon: transparent wrappers / XP: window frame)
    ======================================== */
-.xp-window {
-	/* Neon mode: transparent wrapper */
-}
 
 .xp-titlebar {
 	/* Neon mode: acts as centered title heading */
@@ -273,9 +270,6 @@ body {
 	font-size: 1.5rem;
 }
 
-.xp-window-body {
-	/* Neon mode: transparent wrapper */
-}
 
 /* XP mode: full window frame */
 [data-theme='xp'] .xp-window {
