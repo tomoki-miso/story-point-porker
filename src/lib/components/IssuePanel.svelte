@@ -12,6 +12,20 @@
 	let { roomId, issues, currentIndex, isHost }: Props = $props();
 	let newIssueTitle = $state('');
 
+	function escapeHtml(s: string): string {
+		return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	}
+
+	function linkify(text: string): string {
+		const urlPattern = /(https?:\/\/[^\s<>"']+)/g;
+		const parts = text.split(urlPattern);
+		return parts.map((part, i) =>
+			i % 2 === 1
+				? `<a href="${escapeHtml(part)}" target="_blank" rel="noopener noreferrer">${escapeHtml(part)}</a>`
+				: escapeHtml(part)
+		).join('');
+	}
+
 	function handleAdd() {
 		if (!newIssueTitle.trim()) return;
 		addIssue(roomId, newIssueTitle.trim());
@@ -47,7 +61,7 @@
 		{#each issues as issue, i (issue.id)}
 			<li class="issue-item" class:active={i === currentIndex} class:done={issue.result !== null}>
 				<span class="issue-index">{i + 1}.</span>
-				<span class="issue-title">{issue.title}</span>
+				<span class="issue-title">{@html linkify(issue.title)}</span>
 				{#if issue.result !== null}
 					<span class="issue-result">{issue.result}pt</span>
 				{/if}
@@ -132,6 +146,16 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.issue-title :global(a) {
+		color: var(--color-neon-blue, #00d4ff);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.issue-title :global(a:hover) {
+		opacity: 0.8;
 	}
 
 	.issue-result {
