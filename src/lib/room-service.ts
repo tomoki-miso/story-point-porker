@@ -1,4 +1,4 @@
-import { ref, set, get, update, remove, onValue, type Unsubscribe } from 'firebase/database';
+import { ref, set, get, update, remove, onValue, onDisconnect, type Unsubscribe } from 'firebase/database';
 import { db } from './firebase';
 import { generateRoomId, generatePlayerId } from './id-utils';
 import type { Room, Player, Issue } from './types';
@@ -99,6 +99,18 @@ export function subscribeToRoom(
 	return onValue(ref(db, `rooms/${roomId}`), (snapshot) => {
 		callback(snapshot.val());
 	});
+}
+
+export function setupHostDisconnectHandler(roomId: string): () => void {
+	const roomRef = ref(db, `rooms/${roomId}`);
+	onDisconnect(roomRef).remove();
+	return () => { onDisconnect(roomRef).cancel(); };
+}
+
+export function setupPlayerDisconnectHandler(roomId: string, playerId: string): () => void {
+	const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
+	onDisconnect(playerRef).remove();
+	return () => { onDisconnect(playerRef).cancel(); };
 }
 
 export function leaveRoom(roomId: string, playerId: string): void {

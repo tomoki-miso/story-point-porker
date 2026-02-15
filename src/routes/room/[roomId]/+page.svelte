@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
-	import { joinRoom, vote as submitVote, leaveRoom, deleteRoom } from '$lib/room-service';
+	import { joinRoom, vote as submitVote, leaveRoom, deleteRoom, setupHostDisconnectHandler, setupPlayerDisconnectHandler } from '$lib/room-service';
 	import {
 		roomData,
 		roomInfo,
@@ -29,6 +29,7 @@
 	let copyLabel = $state('URLをコピー');
 
 	let hasReceivedData = $state(false);
+	let cancelDisconnectHandler: (() => void) | null = null;
 
 	$effect(() => {
 		if (!browser || !roomId) return;
@@ -58,6 +59,28 @@
 		return () => {
 			window.removeEventListener('beforeunload', onBeforeUnload);
 		};
+	});
+
+	// ホスト切断時にルーム自動削除
+	$effect(() => {
+		if (!browser || !roomId) return;
+		if ($isHost) {
+			cancelDisconnectHandler = setupHostDisconnectHandler(roomId);
+			return () => {
+				cancelDisconnectHandler?.();
+				cancelDisconnectHandler = null;
+			};
+		}
+	});
+
+	// プレイヤー切断時にプレイヤーエントリ自動削除
+	$effect(() => {
+		if (!browser || !roomId) return;
+		const pid = $currentPlayerId;
+		if (pid && hasJoined) {
+			const cancel = setupPlayerDisconnectHandler(roomId, pid);
+			return () => { cancel(); };
+		}
 	});
 
 	// Firebaseからデータを受信したことを追跡
@@ -98,6 +121,8 @@
 	function handleLeave() {
 		const pid = $currentPlayerId;
 		if (pid) {
+			cancelDisconnectHandler?.();
+			cancelDisconnectHandler = null;
 			if ($isHost) {
 				deleteRoom(roomId);
 			} else {
@@ -161,7 +186,6 @@
 	<RevealAnimation show={showRevealAnimation} />
 	<div class="room-layout">
 		<header class="room-header">
-			<h1 class="room-title neon-text">PORKER</h1>
 			<div class="room-meta">
 				<span class="room-id-badge">Room: {roomId}</span>
 				<button
@@ -319,12 +343,6 @@
 	:global([data-theme='xp']) .room-header {
 		background: var(--color-button-face);
 		border-bottom: 1px solid var(--color-button-shadow);
-	}
-
-	.room-title {
-		font-family: var(--font-display);
-		font-size: 1.8rem;
-		color: var(--color-neon-pink);
 	}
 
 	.room-meta {
