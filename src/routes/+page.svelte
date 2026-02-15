@@ -198,4 +198,21 @@
 	.btn-back:hover {
 		color: var(--color-text);
 	}
+
+	@media (max-width: 768px) {
+		.title {
+			font-size: 2.5rem;
+			letter-spacing: 4px;
+		}
+
+		.subtitle {
+			font-size: 2rem;
+			letter-spacing: 6px;
+		}
+
+		.actions {
+			flex-direction: column;
+			gap: 1rem;
+		}
+	}
 </style>

@@ -26,6 +26,7 @@
 	let unsubscribe: (() => void) | null = null;
 	let showRevealAnimation = $state(false);
 	let prevStatus = $state('voting');
+	let copyLabel = $state('URLをコピー');
 
 	$effect(() => {
 		if (!browser || !roomId) return;
@@ -124,6 +125,16 @@
 			<h1 class="room-title neon-text">PORKER</h1>
 			<div class="room-meta">
 				<span class="room-id-badge">Room: {roomId}</span>
+				<button
+					class="btn-copy"
+					onclick={() => {
+						navigator.clipboard.writeText(window.location.href);
+						copyLabel = 'コピーしました!';
+						setTimeout(() => { copyLabel = 'URLをコピー'; }, 2000);
+					}}
+				>
+					{copyLabel}
+				</button>
 				<button class="btn-leave" onclick={handleLeave}>退出</button>
 			</div>
 		</header>
@@ -416,11 +427,54 @@
 		transform: translateY(-8px);
 	}
 
+	.btn-copy {
+		background: none;
+		border: 1px solid var(--color-neon-blue);
+		color: var(--color-neon-blue);
+		padding: 0.4rem 1rem;
+		border-radius: var(--radius);
+		cursor: pointer;
+		font-size: 0.85rem;
+		transition: all 0.2s ease;
+	}
+
+	.btn-copy:hover {
+		background: var(--color-neon-blue);
+		color: var(--color-bg);
+	}
+
 	.loading {
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-size: 2rem;
+	}
+
+	@media (max-width: 768px) {
+		.room-header {
+			flex-direction: column;
+			gap: 0.5rem;
+			padding: 0.75rem 1rem;
+		}
+
+		.room-body {
+			flex-direction: column;
+			padding: 0.5rem 1rem;
+		}
+
+		.poker-card {
+			width: 52px;
+			height: 78px;
+			font-size: 1.2rem;
+		}
+
+		.cards-row {
+			gap: 0.5rem;
+		}
+
+		.players-circle {
+			gap: 1rem;
+		}
 	}
 </style>
