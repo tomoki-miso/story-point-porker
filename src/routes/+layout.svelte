@@ -3,8 +3,8 @@
 	import '../app.css';
 	import { theme } from '$lib/stores/theme-store';
 	import { browser } from '$app/environment';
-	import XpAssistant from '$lib/components/XpAssistant.svelte';
-	import AppHeader from '$lib/components/AppHeader.svelte';
+	import XpAssistant from '$lib/components/XpAssistant';
+	import AppHeader from '$lib/components/AppHeader';
 
 	let { children } = $props();
 

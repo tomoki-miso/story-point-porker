@@ -15,10 +15,10 @@
 		initRoomSubscription
 	} from '$lib/stores/room-store';
 	import { CARD_VALUES } from '$lib/constants';
-	import HostControls from '$lib/components/HostControls.svelte';
-	import VoteStats from '$lib/components/VoteStats.svelte';
-	import IssuePanel from '$lib/components/IssuePanel.svelte';
-	import RevealAnimation from '$lib/components/RevealAnimation.svelte';
+	import HostControls from '$lib/components/HostControls';
+	import VoteStats from '$lib/components/VoteStats';
+	import IssuePanel from '$lib/components/IssuePanel';
+	import RevealAnimation from '$lib/components/RevealAnimation';
 
 	const roomId: string = $derived($page.params.roomId ?? '');
 	let joinName = $state('');
