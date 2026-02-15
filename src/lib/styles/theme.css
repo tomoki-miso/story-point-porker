@@ -131,9 +131,11 @@ body {
 		transform: rotateY(180deg) scale(0.8);
 		opacity: 0;
 	}
+
 	50% {
 		transform: rotateY(90deg) scale(1.1);
 	}
+
 	100% {
 		transform: rotateY(0deg) scale(1);
 		opacity: 1;
@@ -141,10 +143,12 @@ body {
 }
 
 @keyframes neon-pulse {
+
 	0%,
 	100% {
 		opacity: 1;
 	}
+
 	50% {
 		opacity: 0.7;
 	}
@@ -154,36 +158,44 @@ body {
 	0% {
 		border-color: var(--color-neon-pink);
 	}
+
 	25% {
 		border-color: var(--color-neon-blue);
 	}
+
 	50% {
 		border-color: var(--color-neon-green);
 	}
+
 	75% {
 		border-color: var(--color-neon-yellow);
 	}
+
 	100% {
 		border-color: var(--color-neon-pink);
 	}
 }
 
 @keyframes float {
+
 	0%,
 	100% {
 		transform: translateY(0px);
 	}
+
 	50% {
 		transform: translateY(-10px);
 	}
 }
 
 @keyframes sparkle {
+
 	0%,
 	100% {
 		opacity: 0;
 		transform: scale(0);
 	}
+
 	50% {
 		opacity: 1;
 		transform: scale(1);
