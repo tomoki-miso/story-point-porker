@@ -12,6 +12,7 @@ export function createRoom(hostName: string): { roomId: string; playerId: string
 		hostId: playerId,
 		currentIssueIndex: 0,
 		status: 'voting',
+		mode: 'poker',
 		createdAt: Date.now()
 	};
 

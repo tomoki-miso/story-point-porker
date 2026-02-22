@@ -4,6 +4,7 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { joinRoom, vote as submitVote, leaveRoom, deleteRoom, setupHostDisconnectHandler, setupPlayerDisconnectHandler } from '$lib/room-service';
+	import { switchToKpt, switchToPoker } from '$lib/kpt-service';
 	import {
 		roomData,
 		roomInfo,
@@ -19,6 +20,7 @@
 	import VoteStats from '$lib/components/VoteStats';
 	import IssuePanel from '$lib/components/IssuePanel';
 	import RevealAnimation from '$lib/components/RevealAnimation';
+	import KptBoard from '$lib/components/KptBoard';
 
 	const roomId: string = $derived($page.params.roomId ?? '');
 	let joinName = $state('');
@@ -138,6 +140,15 @@
 	const allVoted = $derived(playerList.length > 0 && playerList.every((p) => p.vote != null));
 	const myVote = $derived($currentPlayer?.vote ?? null);
 	const isRevealed = $derived($roomInfo?.status === 'revealed');
+	const isKptMode = $derived($roomInfo?.mode === 'kpt');
+
+	function handleModeSwitch(mode: 'poker' | 'kpt') {
+		if (mode === 'kpt') {
+			switchToKpt(roomId);
+		} else {
+			switchToPoker(roomId);
+		}
+	}
 
 	$effect(() => {
 		if ($roomInfo?.status === 'revealed' && prevStatus === 'voting') {
@@ -188,6 +199,20 @@
 		<header class="room-header">
 			<div class="room-meta">
 				<span class="room-id-badge">Room: {roomId}</span>
+				<div class="mode-toggle">
+					<button
+						class="mode-btn"
+						class:active={!isKptMode}
+						disabled={!$isHost}
+						onclick={() => handleModeSwitch('poker')}
+					>Poker</button>
+					<button
+						class="mode-btn"
+						class:active={isKptMode}
+						disabled={!$isHost}
+						onclick={() => handleModeSwitch('kpt')}
+					>KPT</button>
+				</div>
 				<button
 					class="btn-copy"
 					onclick={() => {
@@ -203,78 +228,84 @@
 		</header>
 
 		<div class="room-body">
-		<main class="room-main">
-			{#snippet playerCard(player: import('$lib/types').Player)}
-				<div
-					class="player-slot"
-					class:voted={player.vote != null}
-					class:not-voted={player.vote == null && !isRevealed}
-					class:is-me={player.id === $currentPlayerId}
-				>
-					<div class="player-card" class:animate-reveal={isRevealed && player.vote != null}>
-						{#if isRevealed && player.vote != null}
-							<span class="card-value">{player.vote}</span>
-						{:else if player.vote != null}
-							<span class="card-back">&#10003;</span>
-						{:else}
-							<span class="card-empty">?</span>
+		{#if isKptMode}
+			<main class="room-main">
+				<KptBoard {roomId} />
+			</main>
+		{:else}
+			<main class="room-main">
+				{#snippet playerCard(player: import('$lib/types').Player)}
+					<div
+						class="player-slot"
+						class:voted={player.vote != null}
+						class:not-voted={player.vote == null && !isRevealed}
+						class:is-me={player.id === $currentPlayerId}
+					>
+						<div class="player-card" class:animate-reveal={isRevealed && player.vote != null}>
+							{#if isRevealed && player.vote != null}
+								<span class="card-value">{player.vote}</span>
+							{:else if player.vote != null}
+								<span class="card-back">&#10003;</span>
+							{:else}
+								<span class="card-empty">?</span>
+							{/if}
+						</div>
+						<span class="player-name" class:host-badge={player.isHost}>
+							{player.name}
+							{#if player.isHost}(Host){/if}
+						</span>
+						{#if !isRevealed}
+							<span class="vote-label" class:done={player.vote != null}>
+								{player.vote != null ? '選択済み' : '未選択'}
+							</span>
 						{/if}
 					</div>
-					<span class="player-name" class:host-badge={player.isHost}>
-						{player.name}
-						{#if player.isHost}(Host){/if}
-					</span>
-					{#if !isRevealed}
-						<span class="vote-label" class:done={player.vote != null}>
-							{player.vote != null ? '選択済み' : '未選択'}
-						</span>
-					{/if}
+				{/snippet}
+
+				<div class="players-circle">
+					{#each playerList as player (player.id)}
+						{@render playerCard(player)}
+					{/each}
 				</div>
-			{/snippet}
 
-			<div class="players-circle">
-				{#each playerList as player (player.id)}
-					{@render playerCard(player)}
-				{/each}
-			</div>
-
-			{#if !isRevealed}
-				<div class="card-selector">
-					<h3 class="selector-title">ポイントを選択</h3>
-					<div class="cards-row">
-						{#each CARD_VALUES as value}
-							<button
-								class="poker-card"
-								class:selected={myVote === value}
-								onclick={() => handleVote(value)}
-							>
-								{value}
-							</button>
-						{/each}
+				{#if !isRevealed}
+					<div class="card-selector">
+						<h3 class="selector-title">ポイントを選択</h3>
+						<div class="cards-row">
+							{#each CARD_VALUES as value}
+								<button
+									class="poker-card"
+									class:selected={myVote === value}
+									onclick={() => handleVote(value)}
+								>
+									{value}
+								</button>
+							{/each}
+						</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
 
-			{#if $isHost}
-				<HostControls
-					{roomId}
-					room={$roomInfo}
-					players={$players}
-					issues={$issues}
-					{allVoted}
-				/>
-			{/if}
+				{#if $isHost}
+					<HostControls
+						{roomId}
+						room={$roomInfo}
+						players={$players}
+						issues={$issues}
+						{allVoted}
+					/>
+				{/if}
 
-			{#if isRevealed}
-				<VoteStats players={$players} />
-			{/if}
-		</main>
-		<IssuePanel
-			{roomId}
-			issues={$issues}
-			currentIndex={$roomInfo?.currentIssueIndex ?? 0}
-			isHost={$isHost}
-		/>
+				{#if isRevealed}
+					<VoteStats players={$players} />
+				{/if}
+			</main>
+			<IssuePanel
+				{roomId}
+				issues={$issues}
+				currentIndex={$roomInfo?.currentIssueIndex ?? 0}
+				isHost={$isHost}
+			/>
+		{/if}
 		</div>
 	</div>
 {:else}
@@ -363,6 +394,56 @@
 		background: var(--color-window);
 		border: 1px solid var(--color-button-shadow);
 		box-shadow: inset 1px 1px 0 var(--color-button-shadow);
+	}
+
+	.mode-toggle {
+		display: flex;
+		border: 1px solid var(--color-surface);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.mode-btn {
+		padding: 0.4rem 0.75rem;
+		font-size: 0.8rem;
+		background: none;
+		border: none;
+		color: var(--color-text-muted);
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.mode-btn:disabled {
+		cursor: default;
+	}
+
+	.mode-btn.active {
+		background: var(--color-neon-purple);
+		color: var(--color-bg);
+	}
+
+	.mode-btn:not(.active):not(:disabled):hover {
+		color: var(--color-text);
+	}
+
+	:global([data-theme='xp']) .mode-toggle {
+		border: 1px solid var(--color-button-dk-shadow);
+		border-radius: 3px;
+	}
+
+	:global([data-theme='xp']) .mode-btn {
+		background: linear-gradient(180deg, #ffffff 0%, #ece9d8 90%);
+		border-right: 1px solid var(--color-button-shadow);
+		color: var(--color-text);
+	}
+
+	:global([data-theme='xp']) .mode-btn:last-child {
+		border-right: none;
+	}
+
+	:global([data-theme='xp']) .mode-btn.active {
+		background: linear-gradient(180deg, #4e98ff 0%, #0054e3 100%);
+		color: #ffffff;
 	}
 
 	.btn-leave {
