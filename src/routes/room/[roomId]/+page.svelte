@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { joinRoom, vote as submitVote, leaveRoom, deleteRoom, setupHostDisconnectHandler, setupPlayerDisconnectHandler } from '$lib/room-service';
 	import { switchToKpt, switchToPoker } from '$lib/kpt-service';
+	import { switchToMatrix } from '$lib/matrix-service';
 	import {
 		roomData,
 		roomInfo,
@@ -21,6 +22,7 @@
 	import IssuePanel from '$lib/components/IssuePanel';
 	import RevealAnimation from '$lib/components/RevealAnimation';
 	import KptBoard from '$lib/components/KptBoard';
+	import MatrixBoard from '$lib/components/MatrixBoard';
 
 	const roomId: string = $derived($page.params.roomId ?? '');
 	let joinName = $state('');
@@ -141,10 +143,13 @@
 	const myVote = $derived($currentPlayer?.vote ?? null);
 	const isRevealed = $derived($roomInfo?.status === 'revealed');
 	const isKptMode = $derived($roomInfo?.mode === 'kpt');
+	const isMatrixMode = $derived($roomInfo?.mode === 'matrix');
 
-	function handleModeSwitch(mode: 'poker' | 'kpt') {
+	function handleModeSwitch(mode: 'poker' | 'kpt' | 'matrix') {
 		if (mode === 'kpt') {
 			switchToKpt(roomId);
+		} else if (mode === 'matrix') {
+			switchToMatrix(roomId);
 		} else {
 			switchToPoker(roomId);
 		}
@@ -202,10 +207,16 @@
 				<div class="mode-toggle">
 					<button
 						class="mode-btn"
-						class:active={!isKptMode}
+						class:active={!isKptMode && !isMatrixMode}
 						disabled={!$isHost}
 						onclick={() => handleModeSwitch('poker')}
 					>Poker</button>
+					<button
+						class="mode-btn"
+						class:active={isMatrixMode}
+						disabled={!$isHost}
+						onclick={() => handleModeSwitch('matrix')}
+					>2軸</button>
 					<button
 						class="mode-btn"
 						class:active={isKptMode}
@@ -232,6 +243,16 @@
 			<main class="room-main">
 				<KptBoard {roomId} />
 			</main>
+		{:else if isMatrixMode}
+			<main class="room-main">
+				<MatrixBoard {roomId} />
+			</main>
+			<IssuePanel
+				{roomId}
+				issues={$issues}
+				currentIndex={$roomInfo?.currentIssueIndex ?? 0}
+				isHost={$isHost}
+			/>
 		{:else}
 			<main class="room-main">
 				{#snippet playerCard(player: import('$lib/types').Player)}

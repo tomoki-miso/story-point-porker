@@ -1,6 +1,17 @@
 import { writable, derived } from 'svelte/store';
 import { subscribeToRoom } from '$lib/room-service';
-import type { Room, Player, Issue, KptData, KptKeep, KptProblem, RoomMode } from '$lib/types';
+import { calculateMatrixStats } from '$lib/matrix-stats';
+import type {
+	Room,
+	Player,
+	Issue,
+	KptData,
+	KptKeep,
+	KptProblem,
+	RoomMode,
+	MatrixConfig,
+	MatrixVote
+} from '$lib/types';
 
 export const roomData = writable<Record<string, unknown> | null>(null);
 export const currentPlayerId = writable<string | null>(null);
@@ -79,6 +90,36 @@ export const kptPlayerVoteCounts = derived([kptProblems, players], ([$problems, 
 		counts[pid] = $problems.reduce((total, p) => total + (p.votes?.[pid] ?? 0), 0);
 	}
 	return counts;
+});
+
+export const matrixConfig = derived(roomData, ($data) => {
+	if (!$data?.matrix) return null;
+	return $data.matrix as MatrixConfig;
+});
+
+interface MatrixVoteWithPlayer extends MatrixVote {
+	playerId: string;
+	playerName: string;
+}
+
+export const matrixVotes = derived(players, ($players) => {
+	const result: MatrixVoteWithPlayer[] = [];
+	for (const p of Object.values($players)) {
+		if (p.matrixVote && p.matrixVote.x != null && p.matrixVote.y != null) {
+			result.push({
+				playerId: p.id,
+				playerName: p.name,
+				x: p.matrixVote.x,
+				y: p.matrixVote.y
+			});
+		}
+	}
+	return result;
+});
+
+export const matrixResult = derived([matrixVotes, matrixConfig], ([$votes, $config]) => {
+	if (!$config) return null;
+	return calculateMatrixStats($votes, $config);
 });
 
 export function initRoomSubscription(roomId: string) {

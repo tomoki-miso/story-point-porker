@@ -1,5 +1,21 @@
-export type RoomMode = 'poker' | 'kpt';
+export type RoomMode = 'poker' | 'kpt' | 'matrix';
 export type KptStatus = 'posting' | 'voting' | 'result';
+
+export interface MatrixAxis {
+	label: string;
+	values: string[];
+}
+
+export interface MatrixVote {
+	x: string;
+	y: string;
+}
+
+export interface MatrixConfig {
+	xAxis: MatrixAxis;
+	yAxis: MatrixAxis;
+	cells: Record<string, string>;
+}
 
 export interface Room {
 	id: string;
@@ -38,6 +54,7 @@ export interface Player {
 	id: string;
 	name: string;
 	vote: string | null;
+	matrixVote?: MatrixVote | null;
 	isHost: boolean;
 	joinedAt: number;
 }
