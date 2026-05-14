@@ -10,7 +10,8 @@ import type {
 	KptProblem,
 	RoomMode,
 	MatrixConfig,
-	MatrixVote
+	MatrixVote,
+	VotingTimer
 } from '$lib/types';
 
 export const roomData = writable<Record<string, unknown> | null>(null);
@@ -120,6 +121,11 @@ export const matrixVotes = derived(players, ($players) => {
 export const matrixResult = derived([matrixVotes, matrixConfig], ([$votes, $config]) => {
 	if (!$config) return null;
 	return calculateMatrixStats($votes, $config);
+});
+
+export const votingTimer = derived(roomData, ($data) => {
+	if (!$data?.votingTimer) return null;
+	return $data.votingTimer as VotingTimer;
 });
 
 export function initRoomSubscription(roomId: string) {

@@ -10,12 +10,13 @@ export function switchToKpt(roomId: string): void {
 	update(ref(db), {
 		[`rooms/${roomId}/mode`]: 'kpt',
 		[`rooms/${roomId}/kpt/status`]: kptData.status,
-		[`rooms/${roomId}/kpt/maxVotes`]: kptData.maxVotes
+		[`rooms/${roomId}/kpt/maxVotes`]: kptData.maxVotes,
+		[`rooms/${roomId}/votingTimer`]: null
 	});
 }
 
 export function switchToPoker(roomId: string): void {
-	update(ref(db, `rooms/${roomId}`), { mode: 'poker' });
+	update(ref(db, `rooms/${roomId}`), { mode: 'poker', votingTimer: null });
 }
 
 export function addKeep(roomId: string, text: string, authorId: string, authorName: string): void {
@@ -63,7 +64,10 @@ export function resetKpt(roomId: string): void {
 		status: 'posting',
 		maxVotes: 3
 	};
-	set(ref(db, `rooms/${roomId}/kpt`), kptData);
+	update(ref(db), {
+		[`rooms/${roomId}/kpt`]: kptData,
+		[`rooms/${roomId}/votingTimer`]: null
+	});
 }
 
 export function voteProblem(roomId: string, problemId: string, playerId: string, delta: number, currentVotes: number): void {

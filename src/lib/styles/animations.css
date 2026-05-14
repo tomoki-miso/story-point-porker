@@ -105,3 +105,47 @@
 [data-theme='xp'] .animate-float {
 	animation: none;
 }
+
+@keyframes timer-pulse {
+
+	0%,
+	100% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.06);
+	}
+}
+
+@keyframes timer-shake {
+
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+
+	25% {
+		transform: translateX(-4px);
+	}
+
+	75% {
+		transform: translateX(4px);
+	}
+}
+
+.animate-timer-pulse {
+	animation: timer-pulse 1s ease-in-out infinite;
+}
+
+.animate-timer-shake {
+	animation: timer-shake 0.4s ease-in-out infinite;
+}
+
+[data-theme='xp'] .animate-timer-pulse {
+	animation: timer-pulse 1.5s ease-in-out infinite;
+}
+
+[data-theme='xp'] .animate-timer-shake {
+	animation: timer-shake 0.6s ease-in-out infinite;
+}

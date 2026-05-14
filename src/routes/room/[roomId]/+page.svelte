@@ -23,6 +23,7 @@
 	import RevealAnimation from '$lib/components/RevealAnimation';
 	import KptBoard from '$lib/components/KptBoard';
 	import MatrixBoard from '$lib/components/MatrixBoard';
+	import VotingTimer from '$lib/components/VotingTimer';
 
 	const roomId: string = $derived($page.params.roomId ?? '');
 	let joinName = $state('');
@@ -200,6 +201,7 @@
 	</div>
 {:else if $roomInfo}
 	<RevealAnimation show={showRevealAnimation} />
+	<VotingTimer {roomId} />
 	<div class="room-layout">
 		<header class="room-header">
 			<div class="room-meta">

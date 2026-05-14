@@ -1,7 +1,7 @@
 import { ref, set, get, update, remove, onValue, onDisconnect, type Unsubscribe } from 'firebase/database';
 import { db } from './firebase';
 import { generateRoomId, generatePlayerId } from './id-utils';
-import type { Room, Player, Issue } from './types';
+import type { Room, Player, Issue, VotingTimer } from './types';
 
 export function createRoom(hostName: string): { roomId: string; playerId: string } {
 	const roomId = generateRoomId();
@@ -60,7 +60,8 @@ export function revealCards(roomId: string): void {
 
 export function resetVotes(roomId: string, players: Record<string, Player>): void {
 	const updates: Record<string, unknown> = {
-		[`rooms/${roomId}/status`]: 'voting'
+		[`rooms/${roomId}/status`]: 'voting',
+		[`rooms/${roomId}/votingTimer`]: null
 	};
 	for (const pid of Object.keys(players)) {
 		updates[`rooms/${roomId}/players/${pid}/vote`] = null;
@@ -85,7 +86,8 @@ export function nextIssue(
 ): void {
 	const updates: Record<string, unknown> = {
 		[`rooms/${roomId}/currentIssueIndex`]: nextIndex,
-		[`rooms/${roomId}/status`]: 'voting'
+		[`rooms/${roomId}/status`]: 'voting',
+		[`rooms/${roomId}/votingTimer`]: null
 	};
 	for (const pid of Object.keys(players)) {
 		updates[`rooms/${roomId}/players/${pid}/vote`] = null;
@@ -120,4 +122,34 @@ export function leaveRoom(roomId: string, playerId: string): void {
 
 export function deleteRoom(roomId: string): void {
 	remove(ref(db, `rooms/${roomId}`));
+}
+
+export function startVotingTimer(roomId: string, durationMs: number, hostId: string): void {
+	const timer: VotingTimer = {
+		status: 'running',
+		durationMs,
+		startedAt: Date.now(),
+		elapsedBeforePauseMs: 0,
+		startedBy: hostId
+	};
+	set(ref(db, `rooms/${roomId}/votingTimer`), timer);
+}
+
+export function pauseVotingTimer(roomId: string, currentTimer: VotingTimer): void {
+	const elapsedThisRun = Date.now() - currentTimer.startedAt;
+	update(ref(db, `rooms/${roomId}/votingTimer`), {
+		status: 'paused',
+		elapsedBeforePauseMs: currentTimer.elapsedBeforePauseMs + elapsedThisRun
+	});
+}
+
+export function resumeVotingTimer(roomId: string): void {
+	update(ref(db, `rooms/${roomId}/votingTimer`), {
+		status: 'running',
+		startedAt: Date.now()
+	});
+}
+
+export function resetVotingTimer(roomId: string): void {
+	remove(ref(db, `rooms/${roomId}/votingTimer`));
 }

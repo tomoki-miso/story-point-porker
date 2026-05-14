@@ -7,7 +7,8 @@ export async function switchToMatrix(roomId: string): Promise<void> {
 	const existing = await get(ref(db, `rooms/${roomId}/matrix`));
 	const updates: Record<string, unknown> = {
 		[`rooms/${roomId}/mode`]: 'matrix',
-		[`rooms/${roomId}/status`]: 'voting'
+		[`rooms/${roomId}/status`]: 'voting',
+		[`rooms/${roomId}/votingTimer`]: null
 	};
 	if (!existing.exists()) {
 		updates[`rooms/${roomId}/matrix`] = DEFAULT_MATRIX_CONFIG;
@@ -46,7 +47,8 @@ export function updateMatrixCell(roomId: string, xIdx: number, yIdx: number, val
 
 export function resetMatrixVotes(roomId: string, players: Record<string, Player>): void {
 	const updates: Record<string, unknown> = {
-		[`rooms/${roomId}/status`]: 'voting'
+		[`rooms/${roomId}/status`]: 'voting',
+		[`rooms/${roomId}/votingTimer`]: null
 	};
 	for (const pid of Object.keys(players)) {
 		updates[`rooms/${roomId}/players/${pid}/matrixVote`] = null;
@@ -65,7 +67,8 @@ export function nextMatrixIssue(
 ): void {
 	const updates: Record<string, unknown> = {
 		[`rooms/${roomId}/currentIssueIndex`]: nextIndex,
-		[`rooms/${roomId}/status`]: 'voting'
+		[`rooms/${roomId}/status`]: 'voting',
+		[`rooms/${roomId}/votingTimer`]: null
 	};
 	for (const pid of Object.keys(players)) {
 		updates[`rooms/${roomId}/players/${pid}/matrixVote`] = null;

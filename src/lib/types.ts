@@ -24,6 +24,17 @@ export interface Room {
 	status: 'voting' | 'revealed';
 	mode?: RoomMode;
 	createdAt: number;
+	votingTimer?: VotingTimer;
+}
+
+export type VotingTimerStatus = 'running' | 'paused';
+
+export interface VotingTimer {
+	status: VotingTimerStatus;
+	durationMs: number;
+	startedAt: number;
+	elapsedBeforePauseMs: number;
+	startedBy: string;
 }
 
 export interface KptKeep {
